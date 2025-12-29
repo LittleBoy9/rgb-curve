@@ -1,6 +1,6 @@
 {
   "name": "rgb-curve",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fast, lightweight RGB curve editor component for React - like Lightroom/Premiere Pro color grading",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
