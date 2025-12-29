@@ -6,6 +6,14 @@ A fast, lightweight RGB curve editor component for React — like the curves too
 ![npm](https://img.shields.io/npm/v/rgb-curve)
 ![license](https://img.shields.io/npm/l/rgb-curve)
 
+
+![Demo](./assets/curve.gif)
+
+![Demo](./assets/values.gif)
+
+
+# > 🚀 **[Live Demo](https://pg8j5k.csb.app/)** — Try it out in your browser!
+
 ## Features
 
 - 4 channels: **Master** (RGB), **Red**, **Green**, **Blue**
