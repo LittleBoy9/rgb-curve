@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RGB Curve — React Color Grading Component</title>
+  <meta name="description" content="A fast, lightweight RGB curve editor component for React. Like the curves tool in Adobe Lightroom, Premiere Pro, and Photoshop." />
+  <meta name="keywords" content="rgb curve, react, color grading, lightroom, premiere pro, lut, photo editing, video editing" />
+  <meta property="og:title" content="RGB Curve — React Color Grading Component" />
+  <meta property="og:description" content="A fast, lightweight RGB curve editor for React. Lightroom/Premiere Pro inspired." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== CSS RESET & BASE ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Dark theme (default) */
+      --bg-primary: #06060C;
+      --bg-secondary: #111119;
+      --bg-elevated: #1A1A28;
+      --bg-card: #13131D;
+      --border-subtle: #2A2A3A;
+      --border-glow: #3A3A4A;
+      --text-primary: #EEEEF5;
+      --text-secondary: #7B7B9A;
+      --text-muted: #55556A;
+      --accent-purple: #A855F7;
+      --accent-purple-dim: rgba(168, 85, 247, 0.15);
+      --accent-red: #FF6B6B;
+      --accent-red-dim: rgba(255, 107, 107, 0.12);
+      --accent-green: #4ADE80;
+      --accent-green-dim: rgba(74, 222, 128, 0.12);
+      --accent-blue: #60A5FA;
+      --accent-blue-dim: rgba(96, 165, 250, 0.12);
+      --code-bg: #0D0D14;
+      --code-border: #1E1E2E;
+      --gradient-rgb: linear-gradient(135deg, #FF6B6B, #A855F7, #60A5FA);
+      --gradient-hero: linear-gradient(135deg, #FF6B6B 0%, #A855F7 50%, #60A5FA 100%);
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-glow-purple: 0 0 60px rgba(168, 85, 247, 0.15);
+      --shadow-glow-red: 0 0 40px rgba(255, 107, 107, 0.1);
+      --shadow-glow-green: 0 0 40px rgba(74, 222, 128, 0.1);
+      --shadow-glow-blue: 0 0 40px rgba(96, 165, 250, 0.1);
+      --nav-bg: rgba(6, 6, 12, 0.8);
+      --badge-bg: rgba(168, 85, 247, 0.12);
+      --badge-border: rgba(168, 85, 247, 0.3);
+      --badge-text: #C084FC;
+      --btn-secondary-bg: #1A1A28;
+      --btn-secondary-border: #2A2A3A;
+      --btn-secondary-text: #EEEEF5;
+      --curve-canvas-bg: #0A0A12;
+      --scrollbar-track: #111119;
+      --scrollbar-thumb: #2A2A3A;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #FAFAF8;
+      --bg-secondary: #F0F0EE;
+      --bg-elevated: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --border-subtle: #E2E2E0;
+      --border-glow: #D0D0CE;
+      --text-primary: #1A1A1F;
+      --text-secondary: #6B6B80;
+      --text-muted: #9999AA;
+      --accent-purple: #9333EA;
+      --accent-purple-dim: rgba(147, 51, 234, 0.08);
+      --accent-red: #EF4444;
+      --accent-red-dim: rgba(239, 68, 68, 0.06);
+      --accent-green: #22C55E;
+      --accent-green-dim: rgba(34, 197, 94, 0.06);
+      --accent-blue: #3B82F6;
+      --accent-blue-dim: rgba(59, 130, 246, 0.06);
+      --code-bg: #F5F5F3;
+      --code-border: #E2E2E0;
+      --gradient-rgb: linear-gradient(135deg, #EF4444, #9333EA, #3B82F6);
+      --gradient-hero: linear-gradient(135deg, #EF4444 0%, #9333EA 50%, #3B82F6 100%);
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.06);
+      --shadow-glow-purple: 0 0 60px rgba(147, 51, 234, 0.08);
+      --shadow-glow-red: 0 0 40px rgba(239, 68, 68, 0.05);
+      --shadow-glow-green: 0 0 40px rgba(34, 197, 94, 0.05);
+      --shadow-glow-blue: 0 0 40px rgba(59, 130, 246, 0.05);
+      --nav-bg: rgba(250, 250, 248, 0.85);
+      --badge-bg: rgba(147, 51, 234, 0.08);
+      --badge-border: rgba(147, 51, 234, 0.2);
+      --badge-text: #7C3AED;
+      --btn-secondary-bg: #FFFFFF;
+      --btn-secondary-border: #E2E2E0;
+      --btn-secondary-text: #1A1A1F;
+      --curve-canvas-bg: #F0F0EE;
+      --scrollbar-track: #F0F0EE;
+      --scrollbar-thumb: #D0D0CE;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+    /* ========== NOISE OVERLAY ========== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ========== LAYOUT ========== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 120px 0;
+    }
+
+    /* ========== NAVIGATION ========== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--gradient-rgb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 18px;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+      background: var(--accent-purple-dim);
+    }
+
+    .nav-github {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-github:hover {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .nav-github svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      padding: 160px 0 120px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 600px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(168, 85, 247, 0.08) 0%, rgba(96, 165, 250, 0.04) 40%, transparent 70%);
+      pointer-events: none;
+      animation: glowPulse 8s ease-in-out infinite alternate;
+    }
+
+    [data-theme="light"] .hero-glow {
+      background: radial-gradient(ellipse, rgba(147, 51, 234, 0.05) 0%, rgba(59, 130, 246, 0.03) 40%, transparent 70%);
+    }
+
+    @keyframes glowPulse {
+      0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--badge-text);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 80px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(17px, 2vw, 20px);
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 64px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent-purple);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border: 1px solid var(--btn-secondary-border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-purple);
+      background: var(--accent-purple-dim);
+      transform: translateY(-2px);
+    }
+
+    /* Install command */
+    .install-cmd {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: var(--text-secondary);
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .install-cmd code {
+      color: var(--text-primary);
+    }
+
+    .install-cmd .cmd-dollar {
+      color: var(--accent-purple);
+      user-select: none;
+    }
+
+    .install-cmd .cmd-name {
+      color: var(--accent-green);
+    }
+
+    .install-cmd .cmd-arg {
+      color: var(--text-primary);
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .copy-btn:hover {
+      color: var(--accent-purple);
+      background: var(--accent-purple-dim);
+    }
+
+    .copy-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Hero badges row */
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-badges img {
+      height: 22px;
+      border-radius: 4px;
+    }
+
+    /* ========== HERO CURVE ANIMATION ========== */
+    .hero-curve-wrapper {
+      max-width: 520px;
+      margin: 64px auto 0;
+      position: relative;
+    }
+
+    .hero-curve-frame {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-card), var(--shadow-glow-purple);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-curve-frame::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), transparent 50%, rgba(96, 165, 250, 0.2));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .hero-curve-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .hero-curve-tab {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: default;
+      transition: all 0.3s;
+    }
+
+    .hero-curve-tab.active {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    .hero-curve-tab[data-channel="red"].active { color: var(--accent-red); }
+    .hero-curve-tab[data-channel="green"].active { color: var(--accent-green); }
+    .hero-curve-tab[data-channel="blue"].active { color: var(--accent-blue); }
+
+    .hero-curve-canvas {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--curve-canvas-bg);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-curve-canvas svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Animated dots on the hero curve */
+    .curve-dot {
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ========== FEATURES ========== */
+    .features {
+      position: relative;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-purple);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 17px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .features-header .section-desc {
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .feature-icon.purple { background: var(--accent-purple-dim); color: var(--accent-purple); }
+    .feature-icon.red { background: var(--accent-red-dim); color: var(--accent-red); }
+    .feature-icon.green { background: var(--accent-green-dim); color: var(--accent-green); }
+    .feature-icon.blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* ========== CODE EXAMPLE ========== */
+    .code-section {
+      position: relative;
+    }
+
+    .code-section-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .code-block-wrapper {
+      position: relative;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--code-border);
+    }
+
+    .code-block-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .code-block-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .code-block-dot:nth-child(1) { background: #FF5F57; }
+    .code-block-dot:nth-child(2) { background: #FEBC2E; }
+    .code-block-dot:nth-child(3) { background: #28C840; }
+
+    .code-block-filename {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .code-block pre {
+      padding: 24px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      tab-size: 2;
+    }
+
+    .code-block code {
+      color: var(--text-secondary);
+    }
+
+    /* Syntax highlighting */
+    .tok-keyword { color: var(--accent-purple); }
+    .tok-string { color: var(--accent-green); }
+    .tok-component { color: var(--accent-red); }
+    .tok-function { color: var(--accent-blue); }
+    .tok-prop { color: #C4B5FD; }
+    .tok-comment { color: var(--text-muted); font-style: italic; }
+    .tok-bracket { color: var(--text-muted); }
+    .tok-punctuation { color: var(--text-muted); }
+    .tok-tag { color: var(--accent-red); }
+    .tok-attr { color: #C4B5FD; }
+    .tok-value { color: var(--accent-green); }
+    .tok-type { color: var(--accent-blue); }
+    .tok-number { color: #F59E0B; }
+
+    /* ========== THEMES SHOWCASE ========== */
+    .themes {
+      position: relative;
+    }
+
+    .themes-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .themes-header .section-desc {
+      margin: 0 auto;
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .theme-card {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+      background: var(--bg-card);
+    }
+
+    .theme-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+      border-color: var(--border-glow);
+    }
+
+    .theme-preview {
+      aspect-ratio: 4/3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-preview svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .theme-card-info {
+      padding: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .theme-card-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .theme-card-info p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ========== API / PROPS ========== */
+    .api-section {
+      position: relative;
+    }
+
+    .api-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .api-header .section-desc {
+      margin: 0 auto;
+    }
+
+    .api-table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .api-table thead {
+      background: var(--bg-elevated);
+    }
+
+    .api-table th {
+      padding: 14px 24px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .api-table td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+
+    .api-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .api-table tbody tr:hover {
+      background: var(--accent-purple-dim);
+    }
+
+    .api-table .prop-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-purple);
+    }
+
+    .api-table .prop-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent-blue);
+    }
+
+    .api-table .prop-default {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .api-table .prop-desc {
+      color: var(--text-secondary);
+    }
+
+    /* ========== CTA / BOTTOM ========== */
+    .cta {
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-glow {
+      position: absolute;
+      width: 600px;
+      height: 400px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(168, 85, 247, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta h2 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cta p {
+      color: var(--text-secondary);
+      font-size: 18px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover {
+      color: var(--accent-purple);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ========== SCROLL ANIMATIONS ========== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up-delay-1 { transition-delay: 0.1s; }
+    .fade-up-delay-2 { transition-delay: 0.2s; }
+    .fade-up-delay-3 { transition-delay: 0.3s; }
+    .fade-up-delay-4 { transition-delay: 0.4s; }
+    .fade-up-delay-5 { transition-delay: 0.5s; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 968px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .code-section-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .themes-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      section { padding: 80px 0; }
+      .hero { padding: 120px 0 80px; }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .themes-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-actions {
+        flex-direction: column;
+      }
+      .btn { width: 100%; justify-content: center; }
+      .install-cmd { width: 100%; justify-content: center; }
+      .footer-content {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .api-table-wrapper {
+        overflow-x: auto;
+      }
+    }
+
+    /* ========== MOBILE NAV ========== */
+    .nav-menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    @media (max-width: 968px) {
+      .nav-menu-btn { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 14 C4 6, 12 10, 14 2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        RGB Curve
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#code">Quick Start</a></li>
+        <li><a href="#themes">Themes</a></li>
+        <li><a href="#api">API</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon-dark">&#9790;</span>
+          <span class="theme-icon-light" style="display:none">&#9728;</span>
+        </button>
+        <a href="https://github.com/LittleBoy9/rgb-curve" class="nav-github" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-badge fade-up">
+        <span class="hero-badge-dot"></span>
+        open source
+      </div>
+
+      <h1 class="fade-up fade-up-delay-1">
+        Color Grading<br/>for <span class="gradient-text">React</span>
+      </h1>
+
+      <p class="hero-subtitle fade-up fade-up-delay-2">
+        A fast, lightweight RGB curve editor component.<br/>
+        Like the curves tool in Lightroom, Premiere Pro, and Photoshop.
+      </p>
+
+      <div class="hero-actions fade-up fade-up-delay-3">
+        <a href="#code" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Get Started
+        </a>
+        <a href="https://pg8j5k.csb.app/" target="_blank" rel="noopener" class="btn btn-secondary">
+          Live Demo
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+
+      <div class="install-cmd fade-up fade-up-delay-3">
+        <span class="cmd-dollar">$</span>
+        <code><span class="cmd-name">npm install</span> <span class="cmd-arg">rgb-curve</span></code>
+        <button class="copy-btn" onclick="copyInstall()" aria-label="Copy install command">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+
+      <div class="hero-badges fade-up fade-up-delay-4">
+        <img src="https://img.shields.io/bundlephobia/minzip/rgb-curve?style=flat-square&color=A855F7&labelColor=1A1A28" alt="bundle size" />
+        <img src="https://img.shields.io/npm/v/rgb-curve?style=flat-square&color=60A5FA&labelColor=1A1A28" alt="npm version" />
+        <img src="https://img.shields.io/npm/l/rgb-curve?style=flat-square&color=4ADE80&labelColor=1A1A28" alt="license" />
+      </div>
+
+      <!-- Animated Curve Preview -->
+      <div class="hero-curve-wrapper fade-up fade-up-delay-5">
+        <div class="hero-curve-frame">
+          <div class="hero-curve-tabs" id="heroTabs">
+            <div class="hero-curve-tab active" data-channel="master">RGB</div>
+            <div class="hero-curve-tab" data-channel="red">R</div>
+            <div class="hero-curve-tab" data-channel="green">G</div>
+            <div class="hero-curve-tab" data-channel="blue">B</div>
+          </div>
+          <div class="hero-curve-canvas">
+            <svg id="heroCurveSvg" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet">
+              <!-- Grid -->
+              <line x1="75" y1="0" x2="75" y2="300" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <line x1="150" y1="0" x2="150" y2="300" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <line x1="225" y1="0" x2="225" y2="300" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <line x1="0" y1="75" x2="300" y2="75" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <line x1="0" y1="150" x2="300" y2="150" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <line x1="0" y1="225" x2="300" y2="225" stroke="var(--border-subtle)" stroke-width="0.5"/>
+              <!-- Diagonal baseline -->
+              <line x1="0" y1="300" x2="300" y2="0" stroke="var(--text-muted)" stroke-width="0.5" opacity="0.3"/>
+              <!-- Curve path (animated) -->
+              <path id="heroCurvePath" d="" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Control points -->
+              <g id="heroCurvePoints"></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label fade-up">Features</div>
+        <h2 class="section-title fade-up fade-up-delay-1">Everything you need</h2>
+        <p class="section-desc fade-up fade-up-delay-2">Professional color grading in a single React component. Zero dependencies, full control.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 2a7 7 0 017 7"/><path d="M12 2a7 7 0 00-7 7"/></svg>
+          </div>
+          <h3>4 Channels</h3>
+          <p>Master RGB, Red, Green, and Blue channels. Fine-tune each color independently, just like the pros.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-1">
+          <div class="feature-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Smooth Interpolation</h3>
+          <p>Monotone cubic spline and Catmull-Rom interpolation. Silky smooth curves without overshoot artifacts.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-2">
+          <div class="feature-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>256-Value LUT</h3>
+          <p>Get a complete Look-Up Table with every change. Ready for real-time pixel processing and image manipulation.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-1">
+          <div class="feature-icon red">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3l1.9 5.8h6.1l-4.9 3.6 1.9 5.8-4.9-3.6-5 3.6 1.9-5.8L4 8.8h6.1z"/></svg>
+          </div>
+          <h3>Fully Customizable</h3>
+          <p>Style every aspect with JSON props. Colors, sizes, borders, glows &mdash; build the exact look you need.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-2">
+          <div class="feature-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3>TypeScript Native</h3>
+          <p>Written in TypeScript from the ground up. Full type definitions, IntelliSense, and type safety out of the box.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-3">
+          <div class="feature-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>~6KB Gzipped</h3>
+          <p>Lightweight with zero runtime dependencies. Only React as a peer dependency. Ship fast, stay lean.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE EXAMPLE -->
+  <section class="code-section" id="code">
+    <div class="container">
+      <div class="code-section-inner">
+        <div class="fade-up">
+          <div class="section-label">Quick Start</div>
+          <h2 class="section-title">Up and running<br/>in seconds</h2>
+          <p class="section-desc" style="margin-bottom: 32px;">
+            Import the component, listen for changes, and you're done.
+            The <code style="color:var(--accent-purple);font-family:'JetBrains Mono',monospace;font-size:15px;">onChange</code> callback gives you both control points and a ready-to-use LUT.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-purple-dim); display: flex; align-items: center; justify-content: center; color: var(--accent-purple); font-weight: 700; font-size: 14px;">1</div>
+              <span style="font-size: 15px;">Install from npm</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-green-dim); display: flex; align-items: center; justify-content: center; color: var(--accent-green); font-weight: 700; font-size: 14px;">2</div>
+              <span style="font-size: 15px;">Import and add to your JSX</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--accent-blue-dim); display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; font-size: 14px;">3</div>
+              <span style="font-size: 15px;">Use the LUT for pixel processing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block-wrapper fade-up fade-up-delay-2">
+          <div class="code-block">
+            <div class="code-block-header">
+              <div class="code-block-dots">
+                <span class="code-block-dot"></span>
+                <span class="code-block-dot"></span>
+                <span class="code-block-dot"></span>
+              </div>
+              <span class="code-block-filename">App.tsx</span>
+            </div>
+            <pre><code><span class="tok-keyword">import</span> { <span class="tok-component">RGBCurve</span> } <span class="tok-keyword">from</span> <span class="tok-string">'rgb-curve'</span>;
+
+<span class="tok-keyword">function</span> <span class="tok-function">App</span>() {
+  <span class="tok-keyword">return</span> (
+    <span class="tok-bracket">&lt;</span><span class="tok-component">RGBCurve</span>
+      <span class="tok-attr">width</span>=<span class="tok-bracket">{</span><span class="tok-number">400</span><span class="tok-bracket">}</span>
+      <span class="tok-attr">height</span>=<span class="tok-bracket">{</span><span class="tok-number">400</span><span class="tok-bracket">}</span>
+      <span class="tok-attr">onChange</span>=<span class="tok-bracket">{</span>({ <span class="tok-prop">points</span>, <span class="tok-prop">lut</span> }) <span class="tok-keyword">=&gt;</span> {
+        console.<span class="tok-function">log</span>(<span class="tok-string">'Points:'</span>, <span class="tok-prop">points</span>);
+        console.<span class="tok-function">log</span>(<span class="tok-string">'LUT:'</span>, <span class="tok-prop">lut</span>);
+      <span class="tok-bracket">}}</span>
+    <span class="tok-bracket">/&gt;</span>
+  );
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THEMES SHOWCASE -->
+  <section class="themes" id="themes">
+    <div class="container">
+      <div class="themes-header">
+        <div class="section-label fade-up">Themes</div>
+        <h2 class="section-title fade-up fade-up-delay-1">Make it yours</h2>
+        <p class="section-desc fade-up fade-up-delay-2">Every pixel is customizable. Pass a <code style="color:var(--accent-purple);font-family:'JetBrains Mono',monospace;font-size:15px;">styles</code> prop and build the exact look you want.</p>
+      </div>
+
+      <div class="themes-grid">
+        <!-- Dark Theme -->
+        <div class="theme-card fade-up">
+          <div class="theme-preview">
+            <svg viewBox="0 0 400 300">
+              <rect width="400" height="300" fill="#1a1a1a" rx="0"/>
+              <rect x="20" y="20" width="360" height="240" fill="#0d0d0d" rx="8"/>
+              <!-- Grid -->
+              <line x1="110" y1="20" x2="110" y2="260" stroke="#2a2a2a" stroke-width="0.5"/>
+              <line x1="200" y1="20" x2="200" y2="260" stroke="#2a2a2a" stroke-width="0.5"/>
+              <line x1="290" y1="20" x2="290" y2="260" stroke="#2a2a2a" stroke-width="0.5"/>
+              <line x1="20" y1="80" x2="380" y2="80" stroke="#2a2a2a" stroke-width="0.5"/>
+              <line x1="20" y1="140" x2="380" y2="140" stroke="#2a2a2a" stroke-width="0.5"/>
+              <line x1="20" y1="200" x2="380" y2="200" stroke="#2a2a2a" stroke-width="0.5"/>
+              <!-- Diagonal -->
+              <line x1="20" y1="260" x2="380" y2="20" stroke="#333" stroke-width="0.5"/>
+              <!-- Curve -->
+              <path d="M20,260 C80,250 140,180 200,140 C260,100 320,50 380,20" fill="none" stroke="#e0e0e0" stroke-width="2"/>
+              <!-- Points -->
+              <circle cx="20" cy="260" r="5" fill="#fff" stroke="#000" stroke-width="1.5"/>
+              <circle cx="140" cy="180" r="5" fill="#fff" stroke="#000" stroke-width="1.5"/>
+              <circle cx="260" cy="100" r="5" fill="#ffd43b" stroke="#000" stroke-width="1.5"/>
+              <circle cx="380" cy="20" r="5" fill="#fff" stroke="#000" stroke-width="1.5"/>
+              <!-- Tabs -->
+              <rect x="20" y="270" width="360" height="24" fill="#252525" rx="6"/>
+              <rect x="24" y="273" width="50" height="18" fill="#404040" rx="4"/>
+              <text x="49" y="286" fill="#fff" font-size="10" text-anchor="middle" font-family="Inter">RGB</text>
+              <text x="107" y="286" fill="#808080" font-size="10" text-anchor="middle" font-family="Inter">R</text>
+              <text x="148" y="286" fill="#808080" font-size="10" text-anchor="middle" font-family="Inter">G</text>
+              <text x="190" y="286" fill="#808080" font-size="10" text-anchor="middle" font-family="Inter">B</text>
+            </svg>
+          </div>
+          <div class="theme-card-info">
+            <h3>Default Dark</h3>
+            <p>Built-in Lightroom-inspired dark theme</p>
+          </div>
+        </div>
+
+        <!-- Neon Theme -->
+        <div class="theme-card fade-up fade-up-delay-1">
+          <div class="theme-preview">
+            <svg viewBox="0 0 400 300">
+              <rect width="400" height="300" fill="#0a0a0a" rx="0"/>
+              <rect x="20" y="20" width="360" height="240" fill="#000000" rx="8"/>
+              <!-- Grid -->
+              <line x1="110" y1="20" x2="110" y2="260" stroke="#1a1a1a" stroke-width="0.5"/>
+              <line x1="200" y1="20" x2="200" y2="260" stroke="#1a1a1a" stroke-width="0.5"/>
+              <line x1="290" y1="20" x2="290" y2="260" stroke="#1a1a1a" stroke-width="0.5"/>
+              <line x1="20" y1="80" x2="380" y2="80" stroke="#1a1a1a" stroke-width="0.5"/>
+              <line x1="20" y1="140" x2="380" y2="140" stroke="#1a1a1a" stroke-width="0.5"/>
+              <line x1="20" y1="200" x2="380" y2="200" stroke="#1a1a1a" stroke-width="0.5"/>
+              <!-- Diagonal -->
+              <line x1="20" y1="260" x2="380" y2="20" stroke="#2a2a2a" stroke-width="0.5"/>
+              <!-- Glow effect -->
+              <path d="M20,260 C100,240 160,200 200,140 C240,80 300,40 380,20" fill="none" stroke="#00ffff" stroke-width="4" opacity="0.2" filter="blur(4px)"/>
+              <path d="M20,260 C100,240 160,200 200,140 C240,80 300,40 380,20" fill="none" stroke="#00ffff" stroke-width="2"/>
+              <!-- Points -->
+              <circle cx="20" cy="260" r="5" fill="#fff" stroke="#00ffff" stroke-width="1.5"/>
+              <circle cx="200" cy="140" r="5" fill="#ff00ff" stroke="#00ffff" stroke-width="1.5"/>
+              <circle cx="380" cy="20" r="5" fill="#fff" stroke="#00ffff" stroke-width="1.5"/>
+              <!-- Tabs -->
+              <rect x="20" y="270" width="360" height="24" fill="#111111" rx="6"/>
+              <rect x="24" y="273" width="50" height="18" fill="#1a1a1a" rx="4"/>
+              <text x="49" y="286" fill="#00ffff" font-size="10" text-anchor="middle" font-family="Inter">RGB</text>
+              <text x="107" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">R</text>
+              <text x="148" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">G</text>
+              <text x="190" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">B</text>
+            </svg>
+          </div>
+          <div class="theme-card-info">
+            <h3>Neon</h3>
+            <p>Cyberpunk-inspired with glow effects</p>
+          </div>
+        </div>
+
+        <!-- Light Theme -->
+        <div class="theme-card fade-up fade-up-delay-2">
+          <div class="theme-preview">
+            <svg viewBox="0 0 400 300">
+              <rect width="400" height="300" fill="#f5f5f5" rx="0"/>
+              <rect x="20" y="20" width="360" height="240" fill="#ffffff" rx="8" stroke="#e0e0e0" stroke-width="1"/>
+              <!-- Grid -->
+              <line x1="110" y1="20" x2="110" y2="260" stroke="#e0e0e0" stroke-width="0.5"/>
+              <line x1="200" y1="20" x2="200" y2="260" stroke="#e0e0e0" stroke-width="0.5"/>
+              <line x1="290" y1="20" x2="290" y2="260" stroke="#e0e0e0" stroke-width="0.5"/>
+              <line x1="20" y1="80" x2="380" y2="80" stroke="#e0e0e0" stroke-width="0.5"/>
+              <line x1="20" y1="140" x2="380" y2="140" stroke="#e0e0e0" stroke-width="0.5"/>
+              <line x1="20" y1="200" x2="380" y2="200" stroke="#e0e0e0" stroke-width="0.5"/>
+              <!-- Diagonal -->
+              <line x1="20" y1="260" x2="380" y2="20" stroke="#d0d0d0" stroke-width="0.5"/>
+              <!-- Curve -->
+              <path d="M20,260 C80,250 140,180 200,140 C260,100 320,50 380,20" fill="none" stroke="#333333" stroke-width="2"/>
+              <!-- Points -->
+              <circle cx="20" cy="260" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+              <circle cx="140" cy="180" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+              <circle cx="260" cy="100" r="5" fill="#ffca28" stroke="#333" stroke-width="1.5"/>
+              <circle cx="380" cy="20" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+              <!-- Tabs -->
+              <rect x="20" y="270" width="360" height="24" fill="#e0e0e0" rx="6"/>
+              <rect x="24" y="273" width="50" height="18" fill="#ffffff" rx="4"/>
+              <text x="49" y="286" fill="#000" font-size="10" text-anchor="middle" font-family="Inter">RGB</text>
+              <text x="107" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">R</text>
+              <text x="148" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">G</text>
+              <text x="190" y="286" fill="#666" font-size="10" text-anchor="middle" font-family="Inter">B</text>
+            </svg>
+          </div>
+          <div class="theme-card-info">
+            <h3>Light</h3>
+            <p>Clean and minimal for light interfaces</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API REFERENCE -->
+  <section class="api-section" id="api">
+    <div class="container">
+      <div class="api-header">
+        <div class="section-label fade-up">API</div>
+        <h2 class="section-title fade-up fade-up-delay-1">Props Reference</h2>
+        <p class="section-desc fade-up fade-up-delay-2">Simple, well-typed API. Works in both controlled and uncontrolled modes.</p>
+      </div>
+
+      <div class="api-table-wrapper fade-up fade-up-delay-3">
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="prop-name">width</span></td>
+              <td><span class="prop-type">number</span></td>
+              <td><span class="prop-default">300</span></td>
+              <td class="prop-desc">Width of the curve editor in pixels</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">height</span></td>
+              <td><span class="prop-type">number</span></td>
+              <td><span class="prop-default">300</span></td>
+              <td class="prop-desc">Height of the curve editor in pixels</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">onChange</span></td>
+              <td><span class="prop-type">(data) =&gt; void</span></td>
+              <td><span class="prop-default">&mdash;</span></td>
+              <td class="prop-desc">Callback with points, LUT, and active channel</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">defaultPoints</span></td>
+              <td><span class="prop-type">ChannelPoints</span></td>
+              <td><span class="prop-default">&mdash;</span></td>
+              <td class="prop-desc">Initial control points for each channel</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">points</span></td>
+              <td><span class="prop-type">ChannelPoints</span></td>
+              <td><span class="prop-default">&mdash;</span></td>
+              <td class="prop-desc">Controlled points (makes component controlled)</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">styles</span></td>
+              <td><span class="prop-type">RGBCurveStyles</span></td>
+              <td><span class="prop-default">&mdash;</span></td>
+              <td class="prop-desc">Custom styles for every visual element</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">interpolation</span></td>
+              <td><span class="prop-type">'monotone' | 'catmullRom'</span></td>
+              <td><span class="prop-default">'monotone'</span></td>
+              <td class="prop-desc">Curve interpolation algorithm</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">showTabs</span></td>
+              <td><span class="prop-type">boolean</span></td>
+              <td><span class="prop-default">true</span></td>
+              <td class="prop-desc">Show/hide the channel selector tabs</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">showHistogram</span></td>
+              <td><span class="prop-type">boolean</span></td>
+              <td><span class="prop-default">false</span></td>
+              <td class="prop-desc">Show/hide the histogram overlay</td>
+            </tr>
+            <tr>
+              <td><span class="prop-name">disabled</span></td>
+              <td><span class="prop-type">boolean</span></td>
+              <td><span class="prop-default">false</span></td>
+              <td class="prop-desc">Disable all user interactions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-glow"></div>
+      <h2 class="fade-up">Ready to <span class="gradient-text">grade</span>?</h2>
+      <p class="fade-up fade-up-delay-1">Add professional color grading to your React app in under a minute.</p>
+      <div class="cta-actions fade-up fade-up-delay-2">
+        <a href="https://www.npmjs.com/package/rgb-curve" target="_blank" rel="noopener" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/></svg>
+          View on npm
+        </a>
+        <a href="https://github.com/LittleBoy9/rgb-curve" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <span>MIT License &copy; 2024 rgb-curve</span>
+        <div class="footer-links">
+          <a href="https://www.npmjs.com/package/rgb-curve" target="_blank" rel="noopener">npm</a>
+          <a href="https://github.com/LittleBoy9/rgb-curve" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://pg8j5k.csb.app/" target="_blank" rel="noopener">Demo</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ========== THEME SWITCHER ==========
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const iconDark = themeToggle.querySelector('.theme-icon-dark');
+    const iconLight = themeToggle.querySelector('.theme-icon-light');
+
+    // Check saved preference
+    const savedTheme = localStorage.getItem('rgb-curve-theme');
+    if (savedTheme) {
+      html.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('rgb-curve-theme', next);
+      updateThemeIcon(next);
+    });
+
+    function updateThemeIcon(theme) {
+      iconDark.style.display = theme === 'dark' ? 'inline' : 'none';
+      iconLight.style.display = theme === 'light' ? 'inline' : 'none';
+    }
+
+    // ========== COPY INSTALL COMMAND ==========
+    function copyInstall() {
+      navigator.clipboard.writeText('npm install rgb-curve').then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(() => {
+          btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+        }, 2000);
+      });
+    }
+
+    // ========== SCROLL ANIMATIONS ==========
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ========== NAV SHADOW ON SCROLL ==========
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        nav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.15)';
+      } else {
+        nav.style.boxShadow = 'none';
+      }
+    }, { passive: true });
+
+    // ========== HERO CURVE ANIMATION ==========
+    const curveSvg = document.getElementById('heroCurveSvg');
+    const curvePath = document.getElementById('heroCurvePath');
+    const curvePointsGroup = document.getElementById('heroCurvePoints');
+    const heroTabs = document.getElementById('heroTabs');
+
+    const channels = {
+      master: {
+        color: '#e0e0e0',
+        shadow: 'rgba(255,255,255,0.15)',
+        curves: [
+          // S-curve (contrast boost)
+          [{ x: 0, y: 300 }, { x: 75, y: 260 }, { x: 150, y: 150 }, { x: 225, y: 40 }, { x: 300, y: 0 }],
+          // High-key (brighten)
+          [{ x: 0, y: 300 }, { x: 100, y: 180 }, { x: 200, y: 80 }, { x: 300, y: 0 }],
+          // Faded film look
+          [{ x: 0, y: 260 }, { x: 80, y: 220 }, { x: 180, y: 100 }, { x: 300, y: 30 }],
+        ]
+      },
+      red: {
+        color: '#FF6B6B',
+        shadow: 'rgba(255,107,107,0.25)',
+        curves: [
+          [{ x: 0, y: 300 }, { x: 90, y: 240 }, { x: 200, y: 100 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 300 }, { x: 75, y: 270 }, { x: 150, y: 130 }, { x: 230, y: 50 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 280 }, { x: 100, y: 200 }, { x: 200, y: 80 }, { x: 300, y: 10 }],
+        ]
+      },
+      green: {
+        color: '#4ADE80',
+        shadow: 'rgba(74,222,128,0.25)',
+        curves: [
+          [{ x: 0, y: 300 }, { x: 100, y: 220 }, { x: 200, y: 120 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 300 }, { x: 80, y: 250 }, { x: 160, y: 160 }, { x: 240, y: 60 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 290 }, { x: 150, y: 140 }, { x: 300, y: 20 }],
+        ]
+      },
+      blue: {
+        color: '#60A5FA',
+        shadow: 'rgba(96,165,250,0.25)',
+        curves: [
+          [{ x: 0, y: 300 }, { x: 120, y: 200 }, { x: 250, y: 70 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 300 }, { x: 60, y: 260 }, { x: 150, y: 150 }, { x: 240, y: 40 }, { x: 300, y: 0 }],
+          [{ x: 0, y: 270 }, { x: 100, y: 190 }, { x: 200, y: 110 }, { x: 300, y: 40 }],
+        ]
+      }
+    };
+
+    let currentChannel = 'master';
+    let currentCurveIndex = 0;
+    let animationTimer;
+
+    function buildSmoothPath(points) {
+      if (points.length < 2) return '';
+      if (points.length === 2) {
+        return `M${points[0].x},${points[0].y} L${points[1].x},${points[1].y}`;
+      }
+      let d = `M${points[0].x},${points[0].y}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[Math.max(0, i - 1)];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[Math.min(points.length - 1, i + 2)];
+        const tension = 0.35;
+        const cp1x = p1.x + (p2.x - p0.x) * tension;
+        const cp1y = p1.y + (p2.y - p0.y) * tension;
+        const cp2x = p2.x - (p3.x - p1.x) * tension;
+        const cp2y = p2.y - (p3.y - p1.y) * tension;
+        d += ` C${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+      }
+      return d;
+    }
+
+    function renderCurve(channelKey, curveIndex, animate) {
+      const ch = channels[channelKey];
+      const points = ch.curves[curveIndex % ch.curves.length];
+      const pathD = buildSmoothPath(points);
+
+      curvePath.setAttribute('d', pathD);
+      curvePath.setAttribute('stroke', ch.color);
+      curvePath.style.filter = `drop-shadow(0 0 6px ${ch.shadow})`;
+
+      if (animate) {
+        curvePath.style.transition = 'none';
+        const len = curvePath.getTotalLength();
+        curvePath.style.strokeDasharray = len;
+        curvePath.style.strokeDashoffset = len;
+        curvePath.getBoundingClientRect();
+        curvePath.style.transition = 'stroke-dashoffset 1s ease-out';
+        curvePath.style.strokeDashoffset = '0';
+      } else {
+        curvePath.style.strokeDasharray = 'none';
+        curvePath.style.strokeDashoffset = '0';
+        curvePath.style.transition = 'none';
+      }
+
+      // Render points
+      curvePointsGroup.innerHTML = '';
+      points.forEach((p, i) => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', p.x);
+        circle.setAttribute('cy', p.y);
+        circle.setAttribute('r', '6');
+        circle.setAttribute('fill', '#fff');
+        circle.setAttribute('stroke', ch.color);
+        circle.setAttribute('stroke-width', '2');
+        circle.classList.add('curve-dot');
+        if (animate) {
+          circle.style.opacity = '0';
+          circle.style.transform = `translate(0, 10px)`;
+          setTimeout(() => {
+            circle.style.opacity = '1';
+            circle.style.transform = 'translate(0, 0)';
+          }, 600 + i * 100);
+        }
+        curvePointsGroup.appendChild(circle);
+      });
+    }
+
+    // Tab clicks
+    heroTabs.addEventListener('click', (e) => {
+      const tab = e.target.closest('.hero-curve-tab');
+      if (!tab) return;
+      const channel = tab.dataset.channel;
+      if (channel === currentChannel) return;
+
+      heroTabs.querySelectorAll('.hero-curve-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      currentChannel = channel;
+      currentCurveIndex = 0;
+      renderCurve(currentChannel, currentCurveIndex, true);
+
+      // Reset auto-cycle
+      clearInterval(animationTimer);
+      startCycling();
+    });
+
+    function startCycling() {
+      animationTimer = setInterval(() => {
+        currentCurveIndex++;
+        renderCurve(currentChannel, currentCurveIndex, true);
+      }, 4000);
+    }
+
+    // Initial render
+    renderCurve('master', 0, true);
+    startCycling();
+  </script>
+</body>
+</html>
