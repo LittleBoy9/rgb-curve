@@ -1,45 +1,132 @@
-# RGB Curve
+<div align="center">
 
-A fast, lightweight RGB curve editor component for React — like the curves tool in Adobe Lightroom, Premiere Pro, and Photoshop.
+# 🎨 RGB Curve
 
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/rgb-curve)
-![npm](https://img.shields.io/npm/v/rgb-curve)
-![license](https://img.shields.io/npm/l/rgb-curve)
+### A fast, lightweight RGB curve editor for React
 
+Professional color grading curves like Adobe Lightroom, Premiere Pro, and Photoshop
+
+[![npm version](https://img.shields.io/npm/v/rgb-curve?style=flat-square&color=blue)](https://www.npmjs.com/package/rgb-curve)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/rgb-curve?style=flat-square)](https://bundlephobia.com/package/rgb-curve)
+[![npm downloads](https://img.shields.io/npm/dm/rgb-curve?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/rgb-curve)
+[![license](https://img.shields.io/npm/l/rgb-curve?style=flat-square&color=orange)](https://github.com/LittleBoy9/rgb-curve/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+
+<br />
 
 ![Demo](./assets/curve.gif)
 
 ![Demo](./assets/values.gif)
 
+### [🚀 **Live Demo**](https://littleboy9.github.io/rgb-curve/) • [📖 **Full Docs**](#documentation) • [🌐 **Website**](https://littleboy9.github.io/rgb-curve/)
 
-# > 🚀 **[Live Demo](https://pg8j5k.csb.app/)** — Try it out in your browser!
+</div>
 
-## Features
+<br />
 
+---
+
+<br />
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+**🎛️ Professional Grade**
 - 4 channels: **Master** (RGB), **Red**, **Green**, **Blue**
 - Smooth cubic spline interpolation
 - Returns **control points** + **256-value LUT** for pixel processing
-- Beautiful dark theme UI (Lightroom/Premiere Pro inspired)
+
+</td>
+<td width="50%">
+
+**🎨 Beautiful UI**
+- Dark theme by default (Lightroom/Premiere Pro inspired)
 - Fully customizable via JSON style props
-- TypeScript support
+- Smooth animations and interactions
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**⚡ Fast & Lightweight**
 - Zero dependencies (only React as peer dep)
-- Lightweight: ~6KB gzipped
+- ~6KB gzipped
+- Optimized canvas rendering
 
-## Installation
+</td>
+<td width="50%">
+
+**🔧 Developer Friendly**
+- Full TypeScript support
+- Comprehensive API
+- Extensive documentation
+
+</td>
+</tr>
+</table>
+
+<br />
+
+---
+
+<br />
+
+## 📦 Installation
+
+Choose your preferred package manager:
 
 ```bash
+# npm
 npm install rgb-curve
-```
 
-```bash
+# yarn
 yarn add rgb-curve
-```
 
-```bash
+# pnpm
 pnpm add rgb-curve
+
+# bun
+bun add rgb-curve
 ```
 
-## Quick Start
+<br />
+
+---
+
+<br />
+
+## � Table of Contents
+
+- [Quick Start](#-quick-start)
+- [How to Use](#-how-to-use)
+- [Documentation](#-documentation)
+  - [Props API](#props-api)
+  - [onChange Data Structure](#onchange-data-structure)
+  - [Ref Methods](#ref-methods)
+- [Styling](#-styling)
+  - [Complete Styles Example](#complete-styles-example)
+  - [Style Reference](#style-reference)
+  - [Theme Examples](#-theme-examples)
+- [Applying LUT to Images](#-applying-lut-to-images)
+- [Utility Exports](#-utility-exports)
+- [TypeScript](#-typescript)
+- [Browser Support](#-browser-support)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+<br />
+
+---
+
+<br />
+
+## �🚀 Quick Start
+
+Get up and running in seconds:
 
 ```tsx
 import { RGBCurve } from 'rgb-curve';
@@ -57,36 +144,165 @@ function App() {
 }
 ```
 
-## How to Use
+<br />
 
-| Action | Description |
-|--------|-------------|
-| **Click** on curve | Add a new control point |
-| **Drag** a point | Adjust the curve |
-| **Double-click** a point | Remove the point |
-| **Click tabs** | Switch between Master/R/G/B channels |
+---
 
-## Props
+<br />
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `width` | `number` | `300` | Width of the curve editor in pixels |
-| `height` | `number` | `300` | Height of the curve editor in pixels |
-| `defaultPoints` | `Partial<ChannelPoints>` | — | Initial control points for each channel |
-| `points` | `Partial<ChannelPoints>` | — | Controlled points (makes component controlled) |
-| `defaultChannel` | `Channel` | `'master'` | Initial active channel |
-| `activeChannel` | `Channel` | — | Controlled active channel |
-| `onChange` | `(data: CurveChangeData) => void` | — | Callback when curve changes |
-| `onChannelChange` | `(channel: Channel) => void` | — | Callback when channel changes |
-| `styles` | `RGBCurveStyles` | — | Custom styles (see Styling section) |
-| `showTabs` | `boolean` | `true` | Show/hide channel tabs |
-| `showHistogram` | `boolean` | `false` | Show/hide histogram overlay |
-| `histogramData` | `Uint8Array` | — | Histogram data (256 values) |
-| `disabled` | `boolean` | `false` | Disable all interactions |
-| `className` | `string` | — | CSS class for container |
-| `interpolation` | `'monotone' \| 'catmullRom'` | `'monotone'` | Curve interpolation type |
+## 🎮 How to Use
 
-## onChange Data
+<table>
+<tr>
+<th width="30%">Action</th>
+<th width="70%">Description</th>
+</tr>
+<tr>
+<td><kbd>Click</kbd> on curve</td>
+<td>Add a new control point</td>
+</tr>
+<tr>
+<td><kbd>Drag</kbd> a point</td>
+<td>Adjust the curve shape</td>
+</tr>
+<tr>
+<td><kbd>Double-click</kbd> a point</td>
+<td>Remove the control point</td>
+</tr>
+<tr>
+<td><kbd>Click</kbd> tabs</td>
+<td>Switch between Master/R/G/B channels</td>
+</tr>
+</table>
+
+<br />
+
+---
+
+<br />
+
+## 📖 Documentation
+
+### Props API
+
+<table>
+<tr>
+<th width="20%">Prop</th>
+<th width="25%">Type</th>
+<th width="15%">Default</th>
+<th width="40%">Description</th>
+</tr>
+
+<tr>
+<td><code>width</code></td>
+<td><code>number</code></td>
+<td><code>300</code></td>
+<td>Width of the curve editor in pixels</td>
+</tr>
+
+<tr>
+<td><code>height</code></td>
+<td><code>number</code></td>
+<td><code>300</code></td>
+<td>Height of the curve editor in pixels</td>
+</tr>
+
+<tr>
+<td><code>defaultPoints</code></td>
+<td><code>Partial&lt;ChannelPoints&gt;</code></td>
+<td><code>—</code></td>
+<td>Initial control points for each channel</td>
+</tr>
+
+<tr>
+<td><code>points</code></td>
+<td><code>Partial&lt;ChannelPoints&gt;</code></td>
+<td><code>—</code></td>
+<td>Controlled points (makes component controlled)</td>
+</tr>
+
+<tr>
+<td><code>defaultChannel</code></td>
+<td><code>Channel</code></td>
+<td><code>'master'</code></td>
+<td>Initial active channel</td>
+</tr>
+
+<tr>
+<td><code>activeChannel</code></td>
+<td><code>Channel</code></td>
+<td><code>—</code></td>
+<td>Controlled active channel</td>
+</tr>
+
+<tr>
+<td><code>onChange</code></td>
+<td><code>(data: CurveChangeData) =&gt; void</code></td>
+<td><code>—</code></td>
+<td>Callback when curve changes</td>
+</tr>
+
+<tr>
+<td><code>onChannelChange</code></td>
+<td><code>(channel: Channel) =&gt; void</code></td>
+<td><code>—</code></td>
+<td>Callback when channel changes</td>
+</tr>
+
+<tr>
+<td><code>styles</code></td>
+<td><code>RGBCurveStyles</code></td>
+<td><code>—</code></td>
+<td>Custom styles (see <a href="#-styling">Styling section</a>)</td>
+</tr>
+
+<tr>
+<td><code>showTabs</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Show/hide channel tabs</td>
+</tr>
+
+<tr>
+<td><code>showHistogram</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Show/hide histogram overlay</td>
+</tr>
+
+<tr>
+<td><code>histogramData</code></td>
+<td><code>Uint8Array</code></td>
+<td><code>—</code></td>
+<td>Histogram data (256 values)</td>
+</tr>
+
+<tr>
+<td><code>disabled</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Disable all interactions</td>
+</tr>
+
+<tr>
+<td><code>className</code></td>
+<td><code>string</code></td>
+<td><code>—</code></td>
+<td>CSS class for container</td>
+</tr>
+
+<tr>
+<td><code>interpolation</code></td>
+<td><code>'monotone' | 'catmullRom'</code></td>
+<td><code>'monotone'</code></td>
+<td>Curve interpolation algorithm</td>
+</tr>
+
+</table>
+
+<br />
+
+### onChange Data Structure
 
 The `onChange` callback receives an object with:
 
@@ -113,14 +329,16 @@ interface CurveChangeData {
 }
 
 interface CurvePoint {
-  x: number; // 0-255
-  y: number; // 0-255
+  x: number; // Input value: 0-255
+  y: number; // Output value: 0-255
 }
 ```
 
-## Ref Methods
+<br />
 
-You can access component methods via ref:
+### Ref Methods
+
+Access component methods using React refs:
 
 ```tsx
 import { useRef } from 'react';
@@ -134,37 +352,60 @@ function App() {
       <RGBCurve ref={curveRef} />
 
       <button onClick={() => curveRef.current?.reset()}>
-        Reset All
+        Reset All Channels
       </button>
 
       <button onClick={() => curveRef.current?.resetChannel('red')}>
-        Reset Red
+        Reset Red Channel
       </button>
 
       <button onClick={() => {
         const lut = curveRef.current?.getLUT();
-        console.log(lut);
+        console.log('Current LUT:', lut);
       }}>
-        Get LUT
+        Get LUT Data
       </button>
     </>
   );
 }
 ```
 
-### Available Methods
+#### Available Methods
 
-| Method | Description |
-|--------|-------------|
-| `reset()` | Reset all channels to default (diagonal line) |
-| `resetChannel(channel)` | Reset a specific channel |
-| `getLUT()` | Get current LUT data |
-| `getPoints()` | Get current control points |
-| `setPoints(points)` | Set points programmatically |
+<table>
+<tr>
+<th width="40%">Method</th>
+<th width="60%">Description</th>
+</tr>
+<tr>
+<td><code>reset()</code></td>
+<td>Reset all channels to default (diagonal line)</td>
+</tr>
+<tr>
+<td><code>resetChannel(channel)</code></td>
+<td>Reset a specific channel</td>
+</tr>
+<tr>
+<td><code>getLUT()</code></td>
+<td>Get current LUT data for all channels</td>
+</tr>
+<tr>
+<td><code>getPoints()</code></td>
+<td>Get current control points for all channels</td>
+</tr>
+<tr>
+<td><code>setPoints(points)</code></td>
+<td>Set control points programmatically</td>
+</tr>
+</table>
+
+<br />
 
 ---
 
-## Styling
+<br />
+
+## 🎨 Styling
 
 The component comes with a beautiful dark theme by default. You can customize every aspect using the `styles` prop.
 
@@ -443,9 +684,13 @@ interface HistogramStyle {
 />
 ```
 
+<br />
+
 ---
 
-## Theme Examples
+<br />
+
+## 🌈 Theme Examples
 
 ### Light Theme
 
@@ -601,11 +846,15 @@ interface HistogramStyle {
 />
 ```
 
+<br />
+
 ---
 
-## Applying LUT to Images
+<br />
 
-The LUT (Look-Up Table) returned by `onChange` can be used for fast pixel processing:
+## 🖼️ Applying LUT to Images
+
+The LUT (Look-Up Table) returned by `onChange` enables fast, real-time pixel processing:
 
 ```tsx
 import { RGBCurve, applyLUT, LUTData } from 'rgb-curve';
@@ -649,9 +898,13 @@ function ImageEditor() {
 }
 ```
 
+<br />
+
 ---
 
-## Utility Exports
+<br />
+
+## 🔧 Utility Exports
 
 The package exports several utilities for advanced use cases:
 
@@ -697,9 +950,13 @@ import {
 } from 'rgb-curve';
 ```
 
+<br />
+
 ---
 
-## TypeScript
+<br />
+
+## 📘 TypeScript
 
 Full TypeScript support is included. Import types as needed:
 
@@ -721,25 +978,72 @@ import type {
 } from 'rgb-curve';
 ```
 
----
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-Requires browsers with Canvas 2D support.
+<br />
 
 ---
 
-## License
+<br />
 
-MIT
+## 🌐 Browser Support
+
+| Browser | Version |
+|---------|---------|
+| Chrome | Latest ✅ |
+| Firefox | Latest ✅ |
+| Safari | Latest ✅ |
+| Edge | Latest ✅ |
+
+**Requirements:** Browsers with Canvas 2D support.
+
+<br />
 
 ---
 
-## Contributing
+<br />
 
-Contributions are welcome! Please open an issue or submit a PR.
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. 🐛 **Report bugs** - Open an issue with a reproduction
+2. 💡 **Suggest features** - Share your ideas for improvements
+3. 🔧 **Submit PRs** - Fix bugs or add features
+4. 📖 **Improve docs** - Help make the documentation better
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/LittleBoy9/rgb-curve.git
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build the library
+npm run build:lib
+```
+
+<br />
+
+---
+
+<br />
+
+## 📄 License
+
+MIT © [Sounak Das](https://sounakdas.in)
+
+<br />
+
+---
+
+<div align="center">
+
+### Made with ❤️ by [Sounak Das](https://sounakdas.in)
+
+If you find this project helpful, consider giving it a ⭐️ on [GitHub](https://github.com/LittleBoy9/rgb-curve)!
+
+</div>
