@@ -2,6 +2,10 @@
   "name": "rgb-curve",
   "version": "1.0.2",
   "description": "A fast, lightweight RGB curve editor component for React - like Lightroom/Premiere Pro color grading",
+  "homepage": "https://github.com/LittleBoy9/rgb-curve",
+   "bugs": {
+      "url": "https://github.com/LittleBoy9/rgb-curve/issues"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
